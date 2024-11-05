@@ -1,0 +1,28 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Installer Docker
+      yum:
+        name: docker
+        state: present
+
+    - name: Démarrer et activer Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Créer le conteneur NGINX
+      docker_container:
+        name: nginx
+        image: nginx:1.27
+        ports:
+          - "80:80"
+
+    - name: Créer le conteneur PHP-FPM
+      docker_container:
+        name: php_fpm
+        image: php:7.4-fpm
+        volumes:
+          - /app:/app
